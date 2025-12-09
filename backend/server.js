@@ -1,7 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const helmet = require('helmet'); // Import helmet
 const connectDB = require('./config/db');
 
 // Route Imports
@@ -14,26 +13,11 @@ connectDB();
 
 const app = express();
 
-// 1. SECURITY CONFIGURATION (Fixes the Font Error)
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"], // Allow scripts
-        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"], // Allow Google Fonts CSS
-        fontSrc: ["'self'", "data:", "https://fonts.gstatic.com"], // Allow Google Fonts & Data URIs
-        imgSrc: ["'self'", "data:", "https:"], // Allow external images (Unsplash/Pexels)
-        connectSrc: ["'self'", process.env.FRONTEND_URL || "*"], // Allow API calls
-      },
-    },
-  })
-);
-
+// Allow Frontend to talk to Backend (CORS)
 app.use(cors());
 app.use(express.json());
 
-// 2. Simple Court Route
+// 1. Simple Court Route
 app.get('/api/courts', async (req, res) => {
   try {
     const courts = await Court.find();
@@ -43,7 +27,7 @@ app.get('/api/courts', async (req, res) => {
   }
 });
 
-// 3. Routes
+// 2. Routes
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/admin', adminRoutes);
 
