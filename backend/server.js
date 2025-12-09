@@ -13,8 +13,10 @@ connectDB();
 
 const app = express();
 
-// Allow Frontend to talk to Backend (CORS)
+// Enable CORS (Allows frontend to talk to backend)
 app.use(cors());
+
+// Parse JSON bodies
 app.use(express.json());
 
 // 1. Simple Court Route
@@ -27,7 +29,7 @@ app.get('/api/courts', async (req, res) => {
   }
 });
 
-// 2. Routes
+// 2. Main Routes
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/admin', adminRoutes);
 
