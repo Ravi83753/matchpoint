@@ -13,13 +13,22 @@ connectDB();
 
 const app = express();
 
-// Enable CORS (Allows frontend to talk to backend)
-app.use(cors());
+// 1. ALLOW ALL TRAFFIC (CORS) - Solves connection issues
+app.use(cors({
+  origin: '*', // Allow Vercel, Localhost, or any other frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
-// Parse JSON bodies
 app.use(express.json());
 
-// 1. Simple Court Route
+// 2. ROOT ROUTE (Fixes the 404 Error)
+// This lets you open the API link in your browser and see a success message
+app.get('/', (req, res) => {
+  res.send('API is running successfully...');
+});
+
+// 3. API Routes
 app.get('/api/courts', async (req, res) => {
   try {
     const courts = await Court.find();
@@ -29,7 +38,6 @@ app.get('/api/courts', async (req, res) => {
   }
 });
 
-// 2. Main Routes
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/admin', adminRoutes);
 
